@@ -1,4 +1,4 @@
-// Focus on the duration input when the popup loads
+// Focus on the duration input when the page loads
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('duration').focus();
 });
@@ -13,7 +13,7 @@ document.getElementById('add-entry').addEventListener('click', () => {
   // Validate and normalize duration
   const normalizedDuration = normalizeDuration(duration);
   if (!normalizedDuration) {
-    alert('Please enter a valid duration in hh:mm format (e.g., 5:00 or 00:80).');
+    alert('Please enter a valid duration (e.g., 15, 120, 1:20, or 00:15).');
     return;
   }
 
@@ -89,16 +89,26 @@ document.getElementById('clear').addEventListener('click', () => {
   document.getElementById('duration').focus(); // Focus back on the input
 });
 
-// Validate duration (hh:mm) - allows minutes > 59 (e.g., 00:80)
+// Validate duration (hh:mm or minutes only)
 function validateDuration(duration) {
-  const regex = /^([0-9]|0?[0-9]|1[0-9]|2[0-3]):[0-9]{2}$/;
-  return regex.test(duration);
+  const regex = /^([0-9]|0?[0-9]|1[0-9]|2[0-3]):[0-9]{2}$/; // hh:mm format
+  const minutesOnlyRegex = /^\d+$/; // minutes only (e.g., 15, 120)
+  return regex.test(duration) || minutesOnlyRegex.test(duration);
 }
 
-// Normalize duration (convert excess minutes to hours)
+// Normalize duration (convert minutes-only input to hh:mm format)
 function normalizeDuration(duration) {
   if (!validateDuration(duration)) return null;
 
+  // If input is in minutes-only format (e.g., 15, 120)
+  if (/^\d+$/.test(duration)) {
+    const totalMinutes = parseInt(duration, 10);
+    const hours = Math.floor(totalMinutes / 60);
+    const minutes = totalMinutes % 60;
+    return `${hours}:${String(minutes).padStart(2, '0')}`;
+  }
+
+  // If input is in hh:mm format
   let [hours, minutes] = duration.split(':').map(Number);
 
   // Convert excess minutes to hours
