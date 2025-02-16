@@ -34,6 +34,15 @@ h2 {
   margin-bottom: 10px;
 }
 
+/* Labels */
+label {
+  font-size: 16px;
+  color: #4a148c; /* Dark purple for labels */
+  display: block;
+  margin: 10px 0 5px 0;
+  font-weight: bold;
+}
+
 /* Input Fields */
 input, select {
   width: 80%;
